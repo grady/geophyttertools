@@ -1,0 +1,111 @@
+\documentclass{article}
+\usepackage{geometry}
+\geometry{margin=1in}
+%\VignetteIndexEntry{Lungfish plots}
+%\VignetteEngine{knitr::knitr}
+\title{Lungfish paper figures}
+\author{Grady Weyenberg}
+
+\begin{document}
+\maketitle
+This document creates the plots found in the paper.
+
+<<setup, warning=FALSE>>=
+library(geophytterplus.plot)
+library(ggplot2)
+@
+
+\section{Lungfish}
+Replace the tip labels in the trees with abbreviations.
+<<>>=
+tip.orig <- c("Latimeria", "Scyliorhin", "Leucoraja",
+              "Callorhinc", "Takifugu", "Danio",
+              "Lungfish", "Homo", "Gallus", "Xenopus")
+tip.abbrv <- c("Lc", "Sc", "Le", "Cm", "Tr",
+               "Dr", "Pa", "Hs", "Gg", "Xt")
+for (i in seq_along(lungfish.tops$trees)){
+  tord <- match(lungfish.tops$trees[[i]]$tip.label, tip.orig)
+  lungfish.tops$trees[[i]]$tip.label <- tip.abbrv[tord]
+}
+
+@
+
+Generate the lungfish simplex plot.
+<<lungfish_simplex, fig.height=4, fig.width=5, fig.align='center', fig.cap="The simplex plot for the lungfish results, with projected points added.">>=
+pp <- ggplot(lungfish.tops) + corner_labels() +
+  guides(fill=guide_legend(title="topology")) +
+  geom_point(aes(x=x,y=y), lungfish.proj, inherit.aes = FALSE, size=0.5) +
+  theme(legend.position = c(.85,.7))
+pp
+@
+
+Generate a monochrome version of the simplex plot.
+<<lungfish_simplex_bw, fig.height=4, fig.width=5, fig.align='center', fig.cap="A monochrome version of the lungfish simplex plot.">>=
+pp + guides(fill=FALSE) +
+  scale_fill_grey(start=0.5, end=0.9) +
+  geom_label(aes(x=x,y=y,label=topology_index),
+             aggregate(cbind(x,y)~topology_index, lungfish.tops$simplex, mean),
+             inherit.aes = FALSE)
+@
+
+Generate the tree topology grid.
+<<lungfish_grid, fig.height=3, fig.width=4, fig.cap="The trees corresponding to the topologies shown in the simplex plot.", fig.align='center'>>=
+treegrid(lungfish.tops, type="c", direction="d", mar=c(0.2,0.25,1.1,0.25), cex=1)
+@
+
+
+\begin{figure}
+\centering
+\includegraphics[height=2in]{figure/lungfish_simplex-1}
+\includegraphics[height=2in]{figure/lungfish_grid-1}
+\caption{Figures side-by-side.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[height=2in]{figure/lungfish_simplex_bw-1}
+\includegraphics[height=2in]{figure/lungfish_grid-1}
+\caption{Figures side-by-side.}
+\end{figure}
+
+
+\section{Apicomplexa}
+
+Generate the apicomplexa simplex plot.
+<<api_simplex, fig.height=4, fig.width=5, fig.align='center', fig.cap="The simplex plot for the apicomplexa results, with projected points added.">>=
+app <- ggplot(apicomplexa.tops) + corner_labels() +
+  guides(fill=guide_legend(title="topology")) +
+  geom_point(aes(x=x,y=y), apicomplexa.proj, inherit.aes = FALSE, size=0.5) +
+  theme(legend.position = c(.85,.7))
+app
+@
+
+Generate a monochrome version of the simplex plot.
+<<api_simplex_bw, fig.height=4, fig.width=5, fig.align='center', fig.cap="A monochrome version of the apicomplexa simplex plot.">>=
+app + guides(fill=FALSE) +
+  scale_fill_grey(start=0.5, end=0.9) +
+  geom_label(aes(x=x,y=y,label=topology_index),
+             aggregate(cbind(x,y)~topology_index, apicomplexa.tops$simplex, mean),
+             inherit.aes = FALSE)
+@
+
+<<api_grid, fig.height=3, fig.width=4, fig.cap="The trees corresponding to the topologies shown in the simplex plot.", fig.align='center'>>=
+treegrid(apicomplexa.tops, type="c", direction="d", mar=c(0.2,0.25,1.1,0.25), cex=1)
+@
+
+\begin{figure}
+\centering
+\includegraphics[height=2in]{figure/api_simplex-1}
+\includegraphics[height=2in]{figure/api_grid-1}
+\caption{Figures side-by-side.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[height=2in]{figure/api_simplex_bw-1}
+\includegraphics[height=2in]{figure/api_grid-1}
+\caption{Figures side-by-side.}
+\end{figure}
+
+
+\end{document}

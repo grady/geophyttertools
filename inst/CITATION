@@ -1,0 +1,18 @@
+citHeader("To cite geophytter+ in publications use:")
+
+citEntry(entry = "Article",
+  title="Principal Component Analysis and the Locus of the Frechet Mean in the Space of Phylogenetic Trees",
+  author=personList(as.person("Tom W.M. Nye"),
+                    as.person("Xiaoxian Tang"),
+                    as.person("Grady Weyenberg"),
+                    as.person("Ruriko Yoshida")),
+  journal="PENDING",
+  year="2017",
+  volume="xx",
+  number="X",
+  pages="p--pp",
+  url="http://www.example.com/",
+  textVersion=paste("T.W.M. Nye, X. Tang, G. Weyenberg, R. Yoshida (2017)",
+                    "Principal Component Analysis and the Locus of the",
+                    "Frechet Mean in the Space of Phylogenetic Trees.")
+  )

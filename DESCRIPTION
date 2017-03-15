@@ -1,0 +1,13 @@
+Package: geophyttertools
+Type: Package
+Title: Plotting tools for geophytter+ output
+Version: 0.1.0
+Authors@R: as.person("Grady Weyenberg <grady.weyenberg@bristol.ac.uk> [aut, cre]")
+Description: This package provides convenience wrappers for file readers and ggplot
+  to facilitate easy plotting of the output of the geophytter+ software.
+License: GPL-3
+LazyData: TRUE
+Imports: ape, ggplot2
+Suggests: knitr 
+RoxygenNote: 5.0.1
+VignetteBuilder: knitr
