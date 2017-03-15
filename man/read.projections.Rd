@@ -17,7 +17,7 @@ Read geophytter+ projections file
 }
 \examples{
 filename <- system.file("extdata", "lungfish_projections.txt.gz",
-                        package="geophytterplus.plot")
+                        package="geophyttertools")
 lungfish.proj <- read.projections(filename)
 }
 \author{

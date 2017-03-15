@@ -19,7 +19,7 @@ simplex2cartesian <- function(simplex){
 ##' @author Grady Weyenberg
 ##' @examples
 ##' filename <- system.file("extdata", "lungfish_topologies.txt.gz",
-##'                         package="geophytterplus.plot")
+##'                         package="geophyttertools")
 ##' lungfish.tops <- read.topologies(filename)
 read.topologies <- function(file){
   topo.lines <- readLines(file)
@@ -43,7 +43,7 @@ read.topologies <- function(file){
 ##' @author Grady Weyenberg
 ##' @examples
 ##' filename <- system.file("extdata", "lungfish_projections.txt.gz",
-##'                         package="geophytterplus.plot")
+##'                         package="geophyttertools")
 ##' lungfish.proj <- read.projections(filename)
 read.projections <- function(file){
   proj.lines <- readLines(file)

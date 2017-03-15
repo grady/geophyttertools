@@ -15,7 +15,6 @@ GeomSimplex <- ggproto(
 #' @inheritParams ggplot2::geom_polygon
 #' @export
 #' @author Grady Weyenberg
-#' @examples
 geom_simplex <- function(mapping=NULL, data=NULL, ..., na.rm=FALSE,
                          show.legend=NA, inherit.aes=TRUE) {
   layer(
@@ -33,7 +32,6 @@ geom_simplex <- function(mapping=NULL, data=NULL, ..., na.rm=FALSE,
 #'
 #' @export
 #' @author Grady Weyenberg
-#' @examples
 corner_labels <- function(offset=0.02, ...){
   corner.df <- data.frame(x=c(-offset, 1+offset, 0.5),
                           y=c(0, 0, sqrt(3/4)+offset),

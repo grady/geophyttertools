@@ -19,7 +19,7 @@ The tree topologies is an ape::multiPhylo object with the trees corresponding to
 }
 \examples{
 filename <- system.file("extdata", "lungfish_topologies.txt.gz",
-                        package="geophytterplus.plot")
+                        package="geophyttertools")
 lungfish.tops <- read.topologies(filename)
 }
 \author{

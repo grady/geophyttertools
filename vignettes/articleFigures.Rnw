@@ -1,7 +1,7 @@
 \documentclass{article}
 \usepackage{geometry}
 \geometry{margin=1in}
-%\VignetteIndexEntry{Lungfish plots}
+%\VignetteIndexEntry{Article plots}
 %\VignetteEngine{knitr::knitr}
 \title{Lungfish paper figures}
 \author{Grady Weyenberg}
@@ -11,7 +11,7 @@
 This document creates the plots found in the paper.
 
 <<setup, warning=FALSE>>=
-library(geophytterplus.plot)
+library(geophyttertools)
 library(ggplot2)
 @
 
