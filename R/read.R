@@ -48,6 +48,8 @@ read.topologies <- function(file){
 read.projections <- function(file){
   proj.lines <- readLines(file)
   table.end <- match(TRUE, grepl("^\\s*$", proj.lines))
-  df <- read.table(text=proj.lines[1:table.end], header=TRUE)
-  cbind(df[1:4], simplex2cartesian(df[c("p2", "p3")]))
+  df <- read.table(text=proj.lines[1:table.end], header=TRUE, stringsAsFactors=FALSE)
+  result <- cbind(df[1:4], simplex2cartesian(df[c("p2", "p3")]))
+  result$tree=as.list(ape::read.tree(text=df[[7]]))
+  result
 }

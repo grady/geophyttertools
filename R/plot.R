@@ -94,17 +94,7 @@ treegrid <- function(x, ..., mar=c(1.1,1.1,1.1,1.1)){
     layout(1)
     })
   layout(matrix(1:(n*n), n, byrow=TRUE))
-  for(i in seq_along(trees)) ape::plot.phylo(trees[[i]], main=names(trees)[i], ...)
+  treelabs <- names(trees)
+  for(i in seq_along(trees)) ape::plot.phylo(trees[[i]], main=treelabs[i], ...)
 }
 
-#
-# lung.proj <- read.projections("lung_filtered_run1_proj.txt")
-# lung.tops <- read.topologies("lung_filtered_run1_tops.txt")
-#
-# ggplot(lung.tops, show.legend=FALSE) + corner_labels(offset=0.02)
-#
-# ggplot(lung.tops, show.legend=FALSE) + geom_label(aes(x=x,y=y,label=topology_index), aggregate(cbind(x,y)~topology_index, lung.tops$simplex, mean), inherit.aes = FALSE)
-#
-#
-# ggplot(lung.tops, show.legend=FALSE) + corner_labels(offset=0.02) + geom_point(aes(x=x,y=y), lung.proj, inherit.aes = FALSE)
-#

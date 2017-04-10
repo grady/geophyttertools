@@ -1,9 +1,9 @@
 \documentclass{article}
 \usepackage{geometry}
 \geometry{margin=1in}
-%\VignetteIndexEntry{Article plots}
+%\VignetteIndexEntry{Article figures}
 %\VignetteEngine{knitr::knitr}
-\title{Lungfish paper figures}
+\title{Article figures}
 \author{Grady Weyenberg}
 
 \begin{document}
@@ -13,9 +13,29 @@ This document creates the plots found in the paper.
 <<setup, warning=FALSE>>=
 library(geophyttertools)
 library(ggplot2)
+library(ape)
 @
 
 \section{Lungfish}
+
+Add the Frechet means to the tree lists.
+<<>>=
+api.mean <- read.tree(text="((Ta:0.2657407,Bb:0.2320407):0.1026701,((Pf:0.0548862,Pv:0.0552426):0.3365558,((Tt:2.0947664,Cp:0.4349002):0.0000208,(Tg:0.1645478,Et:1.9827010):0.1230717):0.0000214):0.1026701);")
+api.mean <- di2multi(unroot(api.mean), tol=1e-4)
+api.mean$edge.length <- NULL
+apicomplexa.tops$trees$`Frechet mean` <- unroot(api.mean)
+lung.mean <- read.tree(text="(((Scyliorhin:0.0841017,Leucoraja:0.1003302):0.0448129,Callorhinc:0.1322173):0.0446367,((Takifugu:0.1914678,Danio:0.1448249):0.1364780,(Lungfish:0.2084062,(((Homo:0.1414374,Gallus:0.1306986):0.0321389,Xenopus:0.2701969):0.0219851,Latimeria:0.1536371):0.0000033):0.0000117):0.0446367);")
+lung.mean <- di2multi(unroot(lung.mean), tol=1e-4)
+lung.mean$edge.length <- NULL
+lungfish.tops$trees$`Frechet mean` <- unroot(lung.mean)
+@
+Suppplement simplex topology tree names with the number of sample trees projected to the same topology.
+<<>>=
+lung.counts <- count.topologies(lungfish.tops$trees, lungfish.proj$tree)
+names(lungfish.tops$trees) <- paste0(names(lungfish.tops$trees), " (", lung.counts,")")
+api.counts <- count.topologies(apicomplexa.tops$trees, apicomplexa.proj$tree)
+names(apicomplexa.tops$trees) <- paste0(names(apicomplexa.tops$trees), " (", api.counts,")")
+@
 Replace the tip labels in the trees with abbreviations.
 <<>>=
 tip.orig <- c("Latimeria", "Scyliorhin", "Leucoraja",
@@ -27,13 +47,13 @@ for (i in seq_along(lungfish.tops$trees)){
   tord <- match(lungfish.tops$trees[[i]]$tip.label, tip.orig)
   lungfish.tops$trees[[i]]$tip.label <- tip.abbrv[tord]
 }
-
 @
-
 Generate the lungfish simplex plot.
 <<lungfish_simplex, fig.height=4, fig.width=5, fig.align='center', fig.cap="The simplex plot for the lungfish results, with projected points added.">>=
 pp <- ggplot(lungfish.tops) + corner_labels() +
   guides(fill=guide_legend(title="topology")) +
+  #scale_fill_brewer(palette="Set3") +
+  scale_fill_manual(values=c("#8dd3c7","#ffffb3","#bebada","#fb8072","#b3de69","#fdb462","#80b1d3","#fccde5","#d9d9d9"))+
   geom_point(aes(x=x,y=y), lungfish.proj, inherit.aes = FALSE, size=0.5) +
   theme(legend.position = c(.85,.7))
 pp
@@ -50,7 +70,7 @@ pp + guides(fill=FALSE) +
 
 Generate the tree topology grid.
 <<lungfish_grid, fig.height=3, fig.width=4, fig.cap="The trees corresponding to the topologies shown in the simplex plot.", fig.align='center'>>=
-treegrid(lungfish.tops, type="c", direction="d", mar=c(0.2,0.25,1.1,0.25), cex=1)
+treegrid(lungfish.tops, lungfish.proj, type="c", direction="d", mar=c(0.2,0.25,1.1,0.25), cex=1)
 @
 
 
@@ -75,10 +95,12 @@ Generate the apicomplexa simplex plot.
 <<api_simplex, fig.height=4, fig.width=5, fig.align='center', fig.cap="The simplex plot for the apicomplexa results, with projected points added.">>=
 app <- ggplot(apicomplexa.tops) + corner_labels() +
   guides(fill=guide_legend(title="topology")) +
+  scale_fill_brewer(palette="Set3") +
   geom_point(aes(x=x,y=y), apicomplexa.proj, inherit.aes = FALSE, size=0.5) +
   theme(legend.position = c(.85,.7))
 app
 @
+
 
 Generate a monochrome version of the simplex plot.
 <<api_simplex_bw, fig.height=4, fig.width=5, fig.align='center', fig.cap="A monochrome version of the apicomplexa simplex plot.">>=
@@ -106,6 +128,76 @@ treegrid(apicomplexa.tops, type="c", direction="d", mar=c(0.2,0.25,1.1,0.25), ce
 \includegraphics[height=2in]{figure/api_grid-1}
 \caption{Figures side-by-side.}
 \end{figure}
+
+\section{Wireframe dart}
+<<wiredart, fig.width=5, fig.height=2.75>>=
+library(lattice)
+n<-51
+mm <- matrix(numeric(), n, n)
+
+kk <- scales:::rescale(1:n, c(-2,1))
+mm <- (outer(kk, kk, `+`)+4)/3
+
+
+foo <- function(x,y){1 + sqrt(5 / (1 + (y/x)^2))}
+bar <- function(x,y){
+  p <- foo(x,y)
+  1 + (2*x+y)/(3*x) * (1+(x-1)/(1+p))
+}
+mn <- outer(kk,kk,bar)
+
+rr <- mm
+rr[kk<0, kk<0] <- NA
+idx <- outer(kk,kk, function(x,y) (y>0 & y < -2*x) | (y<0 & y <= x/-2 -1e-2))
+rr[idx] <- NA
+idx2 <- outer(kk,kk, function(x,y){(y<x/-2 -1e-2 & y<0) & (y >= x*-2 - 1e-3 & x>=0)})
+rr[idx2] <- mn[idx2]
+rr[kk<0,kk>0] <- t(rr[kk>0,kk<0])
+rr[match(0,kk),match(0,kk)]<-1
+
+wireframe(rr, row.values=kk, column.values=kk, aspect=c(1,1/3), scales=list(arrows=FALSE, tick.number=3, col=1), par.settings=list(axis.line=list(col=0), clip=list(panel="off")),
+          lwd=0.5, xlab=~xi[1], ylab=~xi[2], zlab=~xi[3], border=NA, screen=list(z=45,x=-65,y=0), zoom=1.1, panel.aspect=2/4,
+          panel.3d.wireframe=function(z,y,x,rot.mat,distance,xlim.scaled,ylim.scaled,zlim.scaled,lwd, ...){
+            panel.3dwire(x,y,z,rot.mat, distance, xlim.scaled=xlim.scaled, ylim.scaled=ylim.scaled, zlim.scaled=zlim.scaled, lwd=lwd, ...)
+            xx <- scales:::rescale(c(-2,0,1,1,-2), xlim.scaled, c(-2,1))
+            yy <- scales:::rescale(c(1,0,-2,1,1), ylim.scaled, c(-2,1))
+            zz <- scales:::rescale(c(1,1,1,2,1), zlim.scaled, c(1,2))
+            m <- ltransform3dto3d(rbind(xx,yy,zz), rot.mat, distance)
+            panel.lines(m[1,], m[2,],col=1, lwd=lwd+1, ...)
+            xx <- scales:::rescale(c(-.5,0,1), xlim.scaled, c(-2,1))
+            yy <- scales:::rescale(c(1,0,-.5), ylim.scaled, c(-2,1))
+            zz <- scales:::rescale(c(1.5,4/3,1.5), zlim.scaled, c(1,2))
+            m <- ltransform3dto3d(rbind(xx,yy,zz), rot.mat, distance)
+            panel.lines(m[1,], m[2,],col=1, lwd=lwd+1, ...)
+            xx <- scales:::rescale(c(0,0), xlim.scaled, c(-2,1))
+            yy <- scales:::rescale(c(0,0), ylim.scaled, c(-2,1))
+            zz <- scales:::rescale(c(1,4/3), zlim.scaled, c(1,2))
+            m <- ltransform3dto3d(rbind(xx,yy,zz), rot.mat, distance)
+            panel.lines(m[1,], m[2,],col=1, lwd=lwd+1, ...)
+            })
+
+@
+
+
+<<dart_topologies, fig.width=4, fig.height=4, warning=FALSE>>=
+v0 <- read.tree(text="(1, ((2,3):1,(4,5):1):2);")
+v1 <- read.tree(text="(1, (2,(3,(4,5):1):2):1);")
+v2 <- read.tree(text="(1, (((2,3):1,4):2,5):1);")
+mylabels <- function(tree,...){
+  idx <- which(!is.na(tree$edge.length))
+  edgelabels(tree$edge.length[idx], idx, ...)
+  }
+layout(matrix(c(2,4,1,3), 2))
+oldpar <- par(mar=c(0.25,0,1.5,1), cex=1)
+plot(v0, "c", main=~v[0])
+mylabels(v0, frame="c", bg="white")
+plot(v1, "c", main=~v[1])
+mylabels(v1, frame="c", bg="white")
+plot(v2, "c", main=~v[2])
+mylabels(v2, frame="c", bg="white")
+par(oldpar)
+layout(1)
+@
 
 
 \end{document}

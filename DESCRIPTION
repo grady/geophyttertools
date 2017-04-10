@@ -8,6 +8,6 @@ Description: This package provides convenience wrappers for file readers and ggp
 License: GPL-3
 LazyData: TRUE
 Imports: ape, ggplot2
-Suggests: knitr 
+Suggests: knitr, scales, lattice 
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr
